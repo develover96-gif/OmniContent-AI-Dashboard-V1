@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Share2, Mail, Lock, Github, Chrome, Loader2, ArrowRight } from 'lucide-react';
+import { Share2, Mail, Lock, Github, Chrome, Loader2, ArrowRight, Linkedin } from 'lucide-react';
 
 export const Auth: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ export const Auth: React.FC = () => {
     }
   };
 
-  const handleOAuth = async (provider: 'google' | 'github') => {
+  const handleOAuth = async (provider: 'google' | 'github' | 'linkedin_oidc') => {
     setLoading(true);
     try {
       const { error } = await supabase.auth.signInWithOAuth({
@@ -142,11 +142,12 @@ export const Auth: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <button
               onClick={() => handleOAuth('google')}
               disabled={loading}
-              className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-semibold text-sm text-slate-700"
+              className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-semibold text-xs text-slate-700"
+              title="Sign in with Google"
             >
               <Chrome className="w-4 h-4" />
               Google
@@ -154,19 +155,29 @@ export const Auth: React.FC = () => {
             <button
               onClick={() => handleOAuth('github')}
               disabled={loading}
-              className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-semibold text-sm text-slate-700"
+              className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-semibold text-xs text-slate-700"
+              title="Sign in with GitHub"
             >
               <Github className="w-4 h-4" />
               GitHub
+            </button>
+            <button
+              onClick={() => handleOAuth('linkedin_oidc')}
+              disabled={loading}
+              className="flex items-center justify-center gap-2 py-3 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors font-semibold text-xs text-slate-700"
+              title="Sign in with LinkedIn"
+            >
+              <Linkedin className="w-4 h-4" />
+              LinkedIn
             </button>
           </div>
         </div>
 
         <p className="mt-8 text-center text-slate-500 text-sm">
           By continuing, you agree to our{' '}
-          <a href="#" className="underline hover:text-indigo-600">Terms of Service</a>
+          <a href="#" className="underline hover:text-indigo-600 font-medium">Terms</a>
           {' '}and{' '}
-          <a href="#" className="underline hover:text-indigo-600">Privacy Policy</a>.
+          <a href="#" className="underline hover:text-indigo-600 font-medium">Privacy</a>.
         </p>
       </div>
     </div>

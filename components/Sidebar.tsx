@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LayoutDashboard, PenTool, BarChart3, Settings, Calendar, Share2, LogOut, Zap, ListTodo, UserCircle } from 'lucide-react';
+import { LayoutDashboard, PenTool, BarChart3, Settings, Calendar, Share2, LogOut, Zap, ListTodo, UserCircle, ChevronRight } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 interface SidebarProps {
@@ -11,12 +11,12 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, user }) => {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
     { id: 'composer', label: 'Composer', icon: PenTool },
-    { id: 'queue', label: 'Content Queue', icon: ListTodo },
-    { id: 'voices', label: 'Voice Profiles', icon: UserCircle },
-    { id: 'activities', label: 'Activities', icon: Zap },
-    { id: 'scheduler', label: 'Scheduler', icon: Calendar },
+    { id: 'queue', label: 'Queue', icon: ListTodo },
+    { id: 'scheduler', label: 'Calendar', icon: Calendar },
+    { id: 'voices', label: 'Brand Voice', icon: UserCircle },
+    { id: 'activities', label: 'Integrations', icon: Zap },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
@@ -26,55 +26,56 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, user }) => {
   };
 
   const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member';
-  const avatarUrl = user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=6366f1&color=fff`;
+  const avatarUrl = user?.user_metadata?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=f1f5f9&color=475569`;
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 min-h-screen flex flex-col sticky top-0">
-      <div className="p-6">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <Share2 className="text-white w-5 h-5" />
+    <aside className="w-60 bg-white border-r border-slate-200 min-h-screen flex flex-col sticky top-0 z-50">
+      <div className="p-5">
+        <div className="flex items-center gap-2.5 mb-8 px-1">
+          <div className="w-7 h-7 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+            <Share2 className="text-white w-4 h-4" />
           </div>
-          <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+          <h1 className="text-base font-bold text-slate-900 tracking-tight">
             OmniContent
           </h1>
         </div>
 
-        <nav className="space-y-1">
+        <nav className="space-y-0.5">
           {menuItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+              className={`w-full group relative flex items-center gap-3 px-3 py-2 text-sm font-medium transition-all rounded-lg ${
                 activeTab === item.id
-                  ? 'bg-indigo-50 text-indigo-700'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  ? 'bg-indigo-50/50 text-indigo-700'
+                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
               }`}
             >
-              <item.icon className="w-4.5 h-4.5" />
-              {item.label}
+              {activeTab === item.id && <div className="active-nav-indicator" />}
+              <item.icon className={`w-4.5 h-4.5 ${activeTab === item.id ? 'text-indigo-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+              <span className="flex-1 text-left">{item.label}</span>
+              {activeTab === item.id && <ChevronRight className="w-3.5 h-3.5 opacity-50" />}
             </button>
           ))}
         </nav>
       </div>
 
       <div className="mt-auto p-4 border-t border-slate-100">
-        <div className="p-3 rounded-2xl bg-slate-50 flex items-center gap-3">
+        <div className="flex items-center gap-3 px-2 py-2">
           <img
             src={avatarUrl}
             alt="User"
-            className="w-10 h-10 rounded-full border border-slate-200 bg-white"
+            className="w-8 h-8 rounded-lg border border-slate-100 bg-slate-50"
           />
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-900 truncate">{displayName}</p>
-            <p className="text-xs text-slate-500 truncate">Pro Plan</p>
+            <p className="text-xs font-bold text-slate-900 truncate leading-none">{displayName}</p>
+            <p className="text-[10px] text-slate-500 truncate mt-1 uppercase font-bold tracking-widest">Enterprise</p>
           </div>
           <button 
             onClick={handleLogout}
-            title="Log out"
-            className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-white rounded-lg transition-all"
+            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition-all"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

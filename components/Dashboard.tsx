@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { MoreHorizontal, ArrowUpRight, ArrowDownRight, Users, MessageSquare, MousePointer2 } from 'lucide-react';
-import { Post, PostStatus } from '../types';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { ArrowUpRight, ArrowDownRight, Users, MessageSquare, MousePointer2, ExternalLink } from 'lucide-react';
+import { Post } from '../types';
 import { SmartImage } from './SmartImage';
 
 const data = [
@@ -24,46 +24,67 @@ const Dashboard: React.FC<DashboardProps> = ({ posts }) => {
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-8">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <div className="space-y-6 animate-in fade-in duration-500 pb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {stats.map((stat, i) => (
-          <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-3 bg-indigo-50 rounded-xl text-indigo-600"><stat.icon className="w-6 h-6" /></div>
-              <div className={`px-2 py-0.5 rounded-full text-xs font-bold ${stat.up ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                {stat.change} {stat.up ? <ArrowUpRight className="w-3 h-3 inline" /> : <ArrowDownRight className="w-3 h-3 inline" />}
+          <div key={i} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm transition-all hover:border-indigo-100">
+            <div className="flex justify-between items-start mb-3">
+              <div className="p-2 bg-slate-50 rounded-lg text-slate-500 border border-slate-100">
+                <stat.icon className="w-4.5 h-4.5" />
+              </div>
+              <div className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${stat.up ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                {stat.change}
               </div>
             </div>
-            <p className="text-slate-500 text-sm font-bold uppercase tracking-wider">{stat.label}</p>
-            <h3 className="text-2xl font-bold text-slate-900 mt-1">{stat.value}</h3>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{stat.label}</p>
+            <h3 className="text-xl font-bold text-slate-900 mt-0.5">{stat.value}</h3>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm h-96">
-          <h3 className="font-bold text-slate-900 mb-6">Engagement Overview</h3>
-          <ResponsiveContainer width="100%" height="80%">
-            <AreaChart data={data}>
-              <defs><linearGradient id="colorEng" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/><stop offset="95%" stopColor="#6366f1" stopOpacity={0}/></linearGradient></defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10}} dy={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10}} />
-              <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
-              <Area type="monotone" dataKey="engagements" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorEng)" />
-            </AreaChart>
-          </ResponsiveContainer>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-3 bg-white p-6 rounded-xl border border-slate-200 shadow-sm h-[380px]">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-sm font-bold text-slate-900">Weekly Engagement</h3>
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase">
+               Last 7 Days
+            </div>
+          </div>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data}>
+                <defs>
+                  <linearGradient id="colorEng" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10}} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 10}} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '11px' }}
+                />
+                <Area type="monotone" dataKey="engagements" stroke="#6366f1" strokeWidth={2.5} fillOpacity={1} fill="url(#colorEng)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-          <h3 className="font-bold text-slate-900 mb-6">Recent Content</h3>
-          <div className="space-y-4">
-            {posts.slice(0, 4).map(post => (
-              <div key={post.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-xl transition-colors">
-                <SmartImage src={post.imageUrl} className="w-12 h-12 rounded-lg shrink-0" />
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-sm font-bold text-slate-900">Latest Activity</h3>
+            <button className="text-indigo-600 hover:text-indigo-700 transition-colors">
+               <ExternalLink className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          <div className="space-y-3 flex-1">
+            {posts.slice(0, 5).map(post => (
+              <div key={post.id} className="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer group">
+                <SmartImage src={post.imageUrl} className="w-10 h-10 rounded-lg shrink-0 border border-slate-100" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-slate-900 truncate">{post.title || post.content}</p>
-                  <p className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">{post.platform} • {post.status}</p>
+                  <p className="text-xs font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">{post.title || post.content}</p>
+                  <p className="text-[9px] text-slate-400 uppercase font-bold tracking-tight mt-0.5">{post.platform} • {post.status}</p>
                 </div>
               </div>
             ))}

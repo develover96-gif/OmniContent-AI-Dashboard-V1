@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Wand2, Image as ImageIcon, Loader2, Send, Save, Hash, UserCircle } from 'lucide-react';
+import { Wand2, Image as ImageIcon, Loader2, Send, Save, Hash, UserCircle, Layout, Monitor } from 'lucide-react';
 import { generatePostContent, generatePostImage } from '../services/geminiService';
 import { PostStatus, VoiceProfile } from '../types';
 
@@ -56,46 +56,41 @@ const Composer: React.FC<ComposerProps> = ({ onSave, defaultVoiceProfile }) => {
       createdAt: new Date(),
       source: 'Manual'
     });
-    // Reset
     setTopic('');
     setGeneratedContent({ title: '', content: '', hashtags: [] });
     setGeneratedImage('');
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="bg-white rounded-[2.5rem] p-10 border border-slate-200 shadow-sm overflow-hidden">
-        <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">Content Composer</h2>
-            <p className="text-slate-500">Let AI craft your next viral social media post.</p>
-          </div>
-          
-          {defaultVoiceProfile && (
-            <div className="flex items-center gap-3 px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-2xl">
-              <UserCircle className="w-5 h-5 text-indigo-600" />
-              <div>
-                <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest leading-none">Voice Active</p>
-                <p className="text-sm font-bold text-indigo-700 leading-tight">{defaultVoiceProfile.name}</p>
-              </div>
+    <div className="max-w-6xl mx-auto animate-in fade-in duration-500">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col md:flex-row h-full min-h-[700px]">
+        {/* Workspace Panel */}
+        <div className="flex-1 p-6 md:p-8 border-r border-slate-100 space-y-8 overflow-y-auto">
+          <header className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900 tracking-tight">Post Builder</h2>
+              <p className="text-xs text-slate-500 mt-1 font-medium">Draft your narrative with AI assistance.</p>
             </div>
-          )}
-        </header>
+            {defaultVoiceProfile && (
+              <div className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
+                <UserCircle className="w-4 h-4 text-slate-400" />
+                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{defaultVoiceProfile.name}</span>
+              </div>
+            )}
+          </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Inputs Section */}
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <label className="block text-sm font-bold text-slate-700 ml-1">Social Platform</label>
-              <div className="grid grid-cols-2 gap-3">
-                {['Instagram', 'LinkedIn', 'Twitter', 'Facebook'].map(p => (
+          <div className="space-y-6">
+            <div className="space-y-2.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Target Channel</label>
+              <div className="flex flex-wrap gap-2">
+                {['LinkedIn', 'Instagram', 'Twitter', 'Facebook'].map(p => (
                   <button
                     key={p}
                     onClick={() => setPlatform(p)}
-                    className={`px-4 py-3 rounded-2xl text-sm font-bold transition-all border ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold border transition-all ${
                       platform === p 
-                        ? 'bg-slate-900 border-slate-900 text-white shadow-lg' 
-                        : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-slate-50'
+                        ? 'bg-slate-900 border-slate-900 text-white shadow-sm' 
+                        : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
                     }`}
                   >
                     {p}
@@ -104,108 +99,102 @@ const Composer: React.FC<ComposerProps> = ({ onSave, defaultVoiceProfile }) => {
               </div>
             </div>
 
-            <div className="space-y-4">
-              <label className="block text-sm font-bold text-slate-700 ml-1">What's the topic or hook?</label>
+            <div className="space-y-2.5">
+              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-1">Concept or Prompt</label>
               <textarea
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
-                placeholder="e.g. New features launch for our SaaS product focusing on speed and simplicity. Mention the 40% performance boost."
-                className="w-full h-40 px-6 py-5 bg-slate-50 border border-slate-200 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all resize-none text-slate-700 leading-relaxed"
+                placeholder="Describe your content goals..."
+                className="w-full h-48 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm leading-relaxed focus:bg-white resize-none"
               />
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-3">
               <button
                 onClick={handleGenerateContent}
                 disabled={loadingContent || !topic}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-8 rounded-2xl shadow-xl shadow-indigo-100 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group"
+                className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
               >
-                {loadingContent ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5 group-hover:rotate-12 transition-transform" />}
-                Draft Content
+                {loadingContent ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                <span className="text-xs">Generate Text</span>
               </button>
               <button
                 onClick={handleGenerateImage}
                 disabled={loadingImage || (!topic && !generatedContent.title)}
-                className="flex items-center justify-center bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold py-4 px-6 rounded-2xl transition-all disabled:opacity-50"
-                title="Generate AI Image"
+                className="flex items-center justify-center bg-white border border-slate-200 hover:border-slate-300 text-slate-700 font-bold px-4 rounded-lg transition-all disabled:opacity-50"
               >
-                {loadingImage ? <Loader2 className="w-5 h-5 animate-spin" /> : <ImageIcon className="w-5 h-5" />}
+                {loadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Preview Section */}
-          <div className="bg-slate-50 rounded-[3rem] border border-slate-200 p-8 flex flex-col min-h-[500px] shadow-inner relative">
-            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-              Live Preview • {platform}
+        {/* Preview Panel */}
+        <div className="flex-1 bg-slate-50/50 p-6 md:p-8 flex flex-col gap-6 overflow-y-auto">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+              <Monitor className="w-3.5 h-3.5" />
+              Real-time Preview
             </div>
+            <div className="flex items-center gap-1">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
+              <span className="text-[9px] font-bold text-slate-500 uppercase">Interactive</span>
+            </div>
+          </div>
 
-            <div className="flex-1 space-y-6">
-              {generatedImage ? (
-                <div className="group relative">
-                  <img src={generatedImage} alt="Post Visual" className="w-full aspect-square object-cover rounded-[2rem] border border-slate-200 shadow-md group-hover:scale-[1.02] transition-transform duration-500" />
-                  <button onClick={() => setGeneratedImage('')} className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-md text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ImageIcon className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : (
-                <div className={`w-full aspect-square rounded-[2rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-4 transition-colors ${loadingImage ? 'bg-indigo-50/50 border-indigo-200' : 'bg-white/50'}`}>
-                  {loadingImage ? (
-                    <>
-                      <Loader2 className="w-10 h-10 animate-spin text-indigo-500" />
-                      <p className="text-xs font-bold text-indigo-400 uppercase tracking-widest">Generating Visual...</p>
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
-                        <ImageIcon className="w-8 h-8 text-slate-200" />
-                      </div>
-                      <p className="text-xs text-slate-400 font-medium">Visual placeholder</p>
-                    </>
-                  )}
-                </div>
-              )}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[400px]">
+            {generatedImage ? (
+              <img src={generatedImage} alt="Post Visual" className="w-full aspect-square object-cover" />
+            ) : (
+              <div className="aspect-square bg-slate-100 flex flex-col items-center justify-center gap-3">
+                {loadingImage ? (
+                   <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                ) : (
+                   <ImageIcon className="w-8 h-8 text-slate-200" />
+                )}
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                  {loadingImage ? 'AI Rendering...' : 'No Visual Attached'}
+                </span>
+              </div>
+            )}
 
+            <div className="p-5 space-y-4">
               {generatedContent.content ? (
-                <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-500 bg-white/50 p-6 rounded-[2rem] border border-white">
-                  <h3 className="text-lg font-bold text-slate-900 leading-tight">{generatedContent.title}</h3>
-                  <p className="text-slate-600 text-sm whitespace-pre-wrap leading-relaxed italic border-l-2 border-indigo-100 pl-4">{generatedContent.content}</p>
-                  <div className="flex flex-wrap gap-2 pt-2">
+                <div className="animate-in fade-in duration-300">
+                  <h3 className="text-sm font-bold text-slate-900 leading-snug mb-2">{generatedContent.title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">{generatedContent.content}</p>
+                  <div className="flex flex-wrap gap-1.5 mt-4">
                     {generatedContent.hashtags.map((tag, idx) => (
-                      <span key={idx} className="bg-white border border-slate-100 px-2 py-1 rounded-lg text-indigo-600 text-xs font-bold">#{tag}</span>
+                      <span key={idx} className="text-[10px] font-bold text-indigo-600">#{tag}</span>
                     ))}
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4 p-6 bg-white/30 rounded-[2rem]">
-                  <div className="h-6 w-3/4 bg-slate-200 rounded-full animate-pulse"></div>
-                  <div className="space-y-2">
-                    <div className="h-4 w-full bg-slate-200 rounded-full animate-pulse"></div>
-                    <div className="h-4 w-5/6 bg-slate-200 rounded-full animate-pulse"></div>
-                    <div className="h-4 w-4/6 bg-slate-200 rounded-full animate-pulse"></div>
-                  </div>
+                <div className="space-y-3">
+                  <div className="h-3 w-3/4 bg-slate-100 rounded-full animate-pulse"></div>
+                  <div className="h-3 w-full bg-slate-100 rounded-full animate-pulse"></div>
+                  <div className="h-3 w-5/6 bg-slate-100 rounded-full animate-pulse"></div>
                 </div>
               )}
             </div>
+          </div>
 
-            <div className="pt-8 mt-8 border-t border-slate-200 flex gap-4">
-              <button 
-                onClick={handleSave}
-                disabled={!generatedContent.content}
-                className="flex-1 flex items-center justify-center gap-2 py-4 px-6 bg-white border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-100 transition-all disabled:opacity-30"
-              >
-                <Save className="w-4 h-4" />
-                Draft
-              </button>
-              <button 
-                disabled={!generatedContent.content}
-                className="flex-[2] flex items-center justify-center gap-3 py-4 px-6 bg-slate-900 text-white rounded-2xl text-sm font-bold hover:bg-black transition-all shadow-xl shadow-slate-200 disabled:opacity-30 group"
-              >
-                Publish Ready
-                <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-              </button>
-            </div>
+          <div className="mt-auto pt-6 flex gap-3 border-t border-slate-200/60">
+            <button 
+              onClick={handleSave}
+              disabled={!generatedContent.content}
+              className="flex-1 flex items-center justify-center gap-2 py-2 px-4 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all disabled:opacity-30"
+            >
+              <Save className="w-3.5 h-3.5" />
+              Save Draft
+            </button>
+            <button 
+              disabled={!generatedContent.content}
+              className="flex-[2] flex items-center justify-center gap-2 py-2 px-4 bg-indigo-600 text-white rounded-lg text-xs font-bold hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-100 disabled:opacity-30"
+            >
+              <Send className="w-3.5 h-3.5" />
+              Finalize & Publish
+            </button>
           </div>
         </div>
       </div>
