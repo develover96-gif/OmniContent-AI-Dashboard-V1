@@ -1,30 +1,41 @@
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 import { trackError } from '../lib/monitoring';
 
+// Fixed: Define props with optional children to satisfy usage in index.tsx where TypeScript might not infer JSX children correctly
 interface Props {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 interface State {
   hasError: boolean;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+// ErrorBoundary implements React Error Boundary pattern for production resilience
+// Fixed: Explicitly extending React.Component with typed Props and State to resolve inheritance errors
+export class ErrorBoundary extends React.Component<Props, State> {
+  // Fixed: Initializing state as a class property for better TypeScript support in Error Boundaries
   public state: State = {
     hasError: false
   };
 
+  constructor(props: Props) {
+    super(props);
+  }
+
+  // Mandatory static method for error boundaries to update state based on errors
   public static getDerivedStateFromError(_: Error): State {
     return { hasError: true };
   }
 
+  // Catch side effects of errors for logging
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     trackError(error, `React ErrorBoundary: ${errorInfo.componentStack}`);
   }
 
   public render() {
+    // Fixed: Accessed state which is now properly inherited from React.Component
     if (this.state.hasError) {
       return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
@@ -57,7 +68,7 @@ export class ErrorBoundary extends Component<Props, State> {
       );
     }
 
-    // Fix: Access children through props in a class component
+    // Fixed: Accessed props which are now properly inherited from React.Component
     return this.props.children;
   }
 }
