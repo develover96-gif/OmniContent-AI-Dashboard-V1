@@ -1,0 +1,7 @@
+{
+  "name": "OmniContent AI Dashboard V1",
+  "description": "A sophisticated AI-powered content orchestration hub for social media managers, featuring Gemini-driven text generation, image creation, and performance analytics.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
